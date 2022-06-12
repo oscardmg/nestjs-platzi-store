@@ -2,9 +2,16 @@ GET http://localhost:3000/products
 Content-Type: application/json
 
 ###
+GET http://localhost:3000/products/filter/
+Content-Type: application/json
+
+###
 GET http://localhost:3000/products/1
 Content-Type: application/json
 
+###
+GET http://localhost:3000/products/rrrr
+Content-Type: application/json
 ###
 POST http://localhost:3000/products
 Content-Type: application/json
@@ -13,16 +20,17 @@ Content-Type: application/json
   "name": "product 2",
   "description": "description 2",
   "price": 233,
-  "stock": 0,
-  "image": "image2.png"
+  "stock": 1,
+  "image": "image2.png",
+  "prueba":333
 }
 
 ###
-PUT http://localhost:3000/products/1
+PUT http://localhost:3000/products/rt
 Content-Type: application/json
 
 {
-  "id": 1,
+  "id": 2,
   "name": "product 11111",
   "description": "description 111111",
   "price": 500,
@@ -34,10 +42,9 @@ PUT http://localhost:3000/products/1
 Content-Type: application/json
 
 {
-  "id": 1,
-  "name": "product 555555"
+  "price": "product 555555"
 }
 ###
 
-DELETE http://localhost:3000/products/5
+DELETE http://localhost:3000/products/1
 Content-Type: application/json

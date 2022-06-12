@@ -1,4 +1,6 @@
 import { ProductsService } from '../../services/products/products.service';
+import { ParseIntTestPipe } from '../../common/pipes/parse-int.pipe';
+import { CreateProductDTO, UpdateProductDTO } from '../../dtos/products.dto';
 import {
   Body,
   Controller,
@@ -6,6 +8,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Post,
@@ -17,7 +20,7 @@ import {
 export class ProductsController {
   constructor(private productService: ProductsService) {}
 
-  @Get('filter')
+  @Get('/filter/')
   filter(): string {
     return `filter`;
   }
@@ -29,34 +32,36 @@ export class ProductsController {
 
   @Get(':productId')
   @HttpCode(HttpStatus.ACCEPTED)
-  getOne(@Param('productId', ParseIntPipe) productId: number): any {
-    return this.productService.findOne(productId);
+  getOne(@Param('productId', ParseIntTestPipe) productId: number): any {
+    const product = this.productService.findOne(productId);
+    if (!product) {
+      throw new NotFoundException(`Product with id:${productId} not found`);
+    }
+    return product;
   }
 
   @Post()
-  create(@Body() payLoad: any): any {
+  create(@Body() payLoad: CreateProductDTO): any {
+    console.log(payLoad);
     return this.productService.create(payLoad);
   }
 
   @Put(':productId')
-  update(@Param('productId', ParseIntPipe) id: number, @Body() payLoad: any) {
+  update(
+    @Param('productId', ParseIntPipe) id: number,
+    @Body() payLoad: UpdateProductDTO,
+  ) {
     const updateProduct = this.productService.update(id, payLoad);
-    if (updateProduct === null) {
-      return {
-        message: 'Product not found',
-      };
+    if (!updateProduct) {
+      throw new NotFoundException(`Product with id:${id} not found`);
     }
     return updateProduct;
   }
 
   @Delete(':productId')
   delete(@Param('productId', ParseIntPipe) id: number) {
-    try {
-      this.productService.delete(id);
-    } catch (error) {
-      return {
-        message: error.message,
-      };
+    if (!this.productService.delete(id)) {
+      throw new NotFoundException(`Product with id:${id} not found`);
     }
   }
 }
